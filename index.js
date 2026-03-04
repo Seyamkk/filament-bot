@@ -26,15 +26,41 @@ async function checkStock() {
     let changed = false;
 
     COLORS.forEach(color => {
+
+      // Daha esnek arama
       const variant = data.variants.find(v =>
-        v.option1 === color && v.option2 === "1.75mm"
+        v.title.includes(color) && v.title.includes("1.75")
       );
 
-      if (variant) {
-        const inStock = variant.available;
-        const status = inStock ? "🟢 Stokta" : "🔴 Tükendi";
+      let inStock = false;
 
-        message += `${status} - ${color}\n`;
+      if (variant) {
+        inStock = variant.available;
+      }
+
+      const status = inStock ? "🟢 Stokta" : "🔴 Tükendi";
+      message += `${status} - ${color}\n`;
+
+      if (lastStatus[color] !== inStock) {
+        changed = true;
+        lastStatus[color] = inStock;
+      }
+
+    });
+
+    if (changed) {
+      await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        chat_id: CHAT_ID,
+        text: message
+      });
+    }
+
+  } catch (err) {
+    console.log("Hata:", err.message);
+  }
+}
+
+checkStock();        message += `${status} - ${color}\n`;
 
         if (lastStatus[color] !== inStock) {
           changed = true;
