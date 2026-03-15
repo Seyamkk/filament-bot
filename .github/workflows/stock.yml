@@ -2,7 +2,7 @@ name: Filament Stok Bot
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # her 5 dakikada bir
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -11,14 +11,14 @@ jobs:
 
     steps:
       - name: Repo çek
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Node kur
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 22
 
-      - name: Axios yükle
+      - name: Paketleri kur
         run: npm install axios
 
       - name: Bot çalıştır
