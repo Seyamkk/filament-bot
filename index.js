@@ -27,8 +27,8 @@ async function checkStock() {
     COLORS.forEach(color => {
 
       const variant = data.variants.find(v =>
-        v.title.includes(color) && v.title.includes("1.75")
-      );
+  v.title.toLowerCase().includes(color.toLowerCase())
+);
 
       let inStock = false;
 
