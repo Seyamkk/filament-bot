@@ -1,5 +1,4 @@
 const axios = require("axios");
-const fs = require("fs");
 
 const TOKEN = "8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc";
 const CHAT_ID = "1050200289";
@@ -35,6 +34,33 @@ async function checkStock() {
 
       const inStock = variant.available;
 
+      if (lastStock[tr] === false && inStock === true) {
+
+        const message =
+`🚨 PORIMA STOK GELDİ
+
+🟢 ${tr} PLA stokta!`;
+
+        await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+          chat_id: CHAT_ID,
+          text: message
+        });
+
+      }
+
+      lastStock[tr] = inStock;
+
+    }
+
+  } catch (err) {
+
+    console.log("HATA:",err.message);
+
+  }
+
+}
+
+checkStock();
       if (lastStock[tr] === false && inStock === true) {
 
         const message =
