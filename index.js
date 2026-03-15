@@ -15,19 +15,16 @@ const COLORS = [
   "Siyah"
 ];
 
-let lastStatus = {};
-
 async function checkStock() {
   try {
+
     const response = await axios.get(PRODUCT_URL);
     const data = response.data;
 
     let message = "🔔 PORIMA PLA STOK\n\n";
-    let changed = false;
 
     COLORS.forEach(color => {
 
-      // Daha esnek arama
       const variant = data.variants.find(v =>
         v.title.includes(color) && v.title.includes("1.75")
       );
@@ -35,6 +32,28 @@ async function checkStock() {
       let inStock = false;
 
       if (variant) {
+        inStock = variant.available;
+      }
+
+      const status = inStock ? "🟢 Stokta" : "🔴 Tükendi";
+
+      message += `${status} - ${color}\n`;
+
+    });
+
+    await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+      chat_id: CHAT_ID,
+      text: message
+    });
+
+  } catch (error) {
+
+    console.log("Hata:", error.message);
+
+  }
+}
+
+checkStock();      if (variant) {
         inStock = variant.available;
       }
 
