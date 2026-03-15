@@ -15,14 +15,13 @@ const COLORS = {
   "Siyah": "Black"
 };
 
-let lastStock = {};
-
 async function checkStock() {
-
   try {
 
     const response = await axios.get(PRODUCT_URL);
     const data = response.data;
+
+    let message = "🔔 PORIMA PLA STOK\n\n";
 
     for (const [tr,en] of Object.entries(COLORS)) {
 
@@ -30,84 +29,30 @@ async function checkStock() {
         v.title.toLowerCase().includes(en.toLowerCase())
       );
 
-      if (!variant) continue;
+      let inStock = false;
 
-      const inStock = variant.available;
-
-      if (lastStock[tr] === false && inStock === true) {
-
-        const message =
-`🚨 PORIMA STOK GELDİ
-
-🟢 ${tr} PLA stokta!`;
-
-        await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
-          chat_id: CHAT_ID,
-          text: message
-        });
-
+      if (variant && variant.available) {
+        inStock = true;
       }
-
-      lastStock[tr] = inStock;
-
-    }
-
-  } catch (err) {
-
-    console.log("HATA:",err.message);
-
-  }
-
-}
-
-checkStock();
-      if (lastStock[tr] === false && inStock === true) {
-
-        const message =
-`🚨 PORIMA STOK GELDİ
-
-🟢 ${tr} PLA stokta!`;
-
-        await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
-          chat_id: CHAT_ID,
-          text: message
-        });
-
-      }
-
-      lastStock[tr] = inStock;
-
-    }
-
-  } catch (err) {
-
-    console.log("HATA:",err.message);
-
-  }
-
-}
-
-checkStock();      }
 
       const status = inStock ? "🟢 Stokta" : "🔴 Tükendi";
 
-      message += `${status} - ${color}\n`;
+      message += `${status} - ${tr}\n`;
 
-    });
+    }
 
-    await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+    await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
       chat_id: CHAT_ID,
       text: message
     });
 
     console.log("Mesaj gönderildi");
 
-  } catch (error) {
+  } catch (err) {
 
-    console.log("HATA:", error);
+    console.log("HATA:", err.message);
 
   }
-
 }
 
 checkStock();
