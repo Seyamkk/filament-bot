@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const TOKEN = "8720086137:AAEjaw3Gl3qmDEARIiX79CluHyieeTWO7xw";
+const TOKEN = "8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc";
 const CHAT_ID = "1050200289";
 
 const PRODUCT_URL = "https://porima3d.com/products/porima-eco-smart-pla-filament.js";
