@@ -16,6 +16,7 @@ const COLORS = [
 ];
 
 async function checkStock() {
+
   try {
 
     const response = await axios.get(PRODUCT_URL);
@@ -46,58 +47,14 @@ async function checkStock() {
       text: message
     });
 
+    console.log("Mesaj gönderildi");
+
   } catch (error) {
 
-    console.log("Hata:", error.message);
+    console.log("HATA:", error);
 
   }
-}
 
-checkStock();      if (variant) {
-        inStock = variant.available;
-      }
-
-      const status = inStock ? "🟢 Stokta" : "🔴 Tükendi";
-      message += `${status} - ${color}\n`;
-
-      if (lastStatus[color] !== inStock) {
-        changed = true;
-        lastStatus[color] = inStock;
-      }
-
-    });
-
-    if (changed) {
-      await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        chat_id: CHAT_ID,
-        text: message
-      });
-    }
-
-  } catch (err) {
-    console.log("Hata:", err.message);
-  }
-}
-
-checkStock();        message += `${status} - ${color}\n`;
-
-        if (lastStatus[color] !== inStock) {
-          changed = true;
-          lastStatus[color] = inStock;
-        }
-      }
-    });
-
-    if (changed) {
-      await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        chat_id: CHAT_ID,
-        text: message
-      });
-    }
-
-  } catch (err) {
-    console.log("Hata:", err.message);
-  }
 }
 
 checkStock();
