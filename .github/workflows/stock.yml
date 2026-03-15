@@ -1,25 +1,21 @@
 name: Filament Stok Bot
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '*/5 * * * *'
-  workflow_dispatch:
 
 jobs:
   run:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Repo çek
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Node kur
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Paketleri kur
-        run: npm install axios
+      - run: npm install axios
 
-      - name: Bot çalıştır
-        run: node index.js
+      - run: node index.js
