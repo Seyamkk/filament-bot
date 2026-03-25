@@ -1,7 +1,7 @@
 const axios = require("axios");
 
-const TOKEN = process.env.8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc;
-const CHAT_ID = process.env.1050200289;
+const TOKEN = "8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc";
+const CHAT_ID = "1050200289";
 
 async function run() {
     try {
