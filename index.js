@@ -9,47 +9,57 @@ async function checkStock() {
 
         const url = "https://porima3d.com/products/porima-eco-smart-pla-filament.js?t=" + Date.now();
 
+        console.log("İstek atılıyor...");
+
         const response = await axios.get(url, {
             headers: {
                 "User-Agent": "Mozilla/5.0"
             }
         });
 
-        // BAZEN string geliyor → garanti parse
-        const data = typeof response.data === "string"
-            ? JSON.parse(response.data)
-            : response.data;
+        console.log("Status:", response.status);
+        console.log("Data tipi:", typeof response.data);
+
+        let data;
+
+        try {
+            data = typeof response.data === "string"
+                ? JSON.parse(response.data)
+                : response.data;
+        } catch (e) {
+            console.log("JSON parse hatası");
+            console.log(response.data);
+            return;
+        }
 
         if (!data.variants) {
-            throw new Error("Variants bulunamadı!");
+            console.log("Variants YOK!");
+            console.log(data);
+            return;
         }
 
         let stokta = [];
 
-        console.log("---- DEBUG ----");
+        console.log("---- VARYANTLAR ----");
 
-        for (let v of data.variants) {
-
-            console.log(v.title + " => " + v.available);
+        data.variants.forEach(v => {
+            console.log(v.title, "=>", v.available);
 
             if (v.available === true) {
                 stokta.push(v.title);
             }
+        });
 
-        }
+        let mesaj = stokta.length > 0
+            ? "🧵 STOK VAR\n\n" + stokta.join("\n")
+            : "🔴 Stok yok";
 
-        let mesaj = "";
+        console.log("Gönderilecek mesaj:");
+        console.log(mesaj);
 
-        if (stokta.length > 0) {
-
-            mesaj =
-                "🧵 PORIMA STOK VAR\n\n" +
-                stokta.map(x => "🟢 " + x).join("\n");
-
-        } else {
-
-            mesaj = "🔴 Stok yok";
-
+        if (!TOKEN || !CHAT_ID) {
+            console.log("TOKEN veya CHAT_ID eksik!");
+            return;
         }
 
         await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
@@ -57,13 +67,9 @@ async function checkStock() {
             text: mesaj
         });
 
-        console.log("Mesaj gönderildi");
+        console.log("Telegram gönderildi");
 
     } catch (err) {
 
-        console.error("HATA DETAY:", err);
-
-    }
-}
-
-checkStock();
+        console.log("GENEL HATA:");
+        console.log(err.message);
