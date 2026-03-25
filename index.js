@@ -1,40 +1,70 @@
 const axios = require("axios");
 
-const TOKEN = "8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc";
-const CHAT_ID = "1050200289";
-
-const PRODUCT_URL = "https://porima3d.com/products/porima-eco-smart-pla-filament.js";
-
-const COLORS = {
-  "Beyaz": "White",
-  "Sarı": "Yellow",
-  "Kahverengi": "Brown",
-  "Turkuaz": "Turquoise",
-  "Mavi": "Blue",
-  "Gri": "Grey",
-  "Siyah": "Black"
-};
+// Telegram
+const TOKEN = process.env.8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc;
+const CHAT_ID = process.env.1050200289;
 
 async function checkStock() {
-  try {
+    try {
 
-    const response = await axios.get(PRODUCT_URL);
-    const data = response.data;
+        // Cache kırmak için random ekliyoruz
+        const url = "https://porima3d.com/products/porima-eco-smart-pla-filament.js?t=" + Date.now();
 
-    let message = "🔔 PORIMA PLA STOK\n\n";
+        const response = await axios.get(url, {
+            headers: {
+                "User-Agent": "Mozilla/5.0",
+                "Cache-Control": "no-cache"
+            }
+        });
 
-    for (const [tr,en] of Object.entries(COLORS)) {
+        const data = response.data;
 
-      const variant = data.variants.find(v =>
-        v.title.toLowerCase().includes(en.toLowerCase())
-      );
+        let stokta = [];
 
-      let inStock = false;
+        console.log("---- TÜM VERİ ----");
 
-      if (variant && variant.available) {
-        inStock = true;
-      }
+        data.variants.forEach(v => {
 
+            console.log(v.option1, "=>", v.available);
+
+            if (v.available) {
+                stokta.push(v.option1);
+            }
+
+        });
+
+        if (stokta.length > 0) {
+
+            const mesaj =
+                "🧵 PORIMA STOK\n\n" +
+                stokta.map(r => "🟢 " + r).join("\n");
+
+            await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                chat_id: CHAT_ID,
+                text: mesaj
+            });
+
+            console.log("Gönderildi");
+
+        } else {
+
+            await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                chat_id: CHAT_ID,
+                text: "🔴 Stok yok"
+            });
+
+            console.log("Stok yok");
+
+        }
+
+    } catch (err) {
+
+        console.log("HATA:", err.message);
+
+    }
+}
+
+checkStock();
       const status = inStock ? "🟢 Stokta" : "🔴 Tükendi";
 
       message += `${status} - ${tr}\n`;
