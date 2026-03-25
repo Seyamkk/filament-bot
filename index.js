@@ -1,40 +1,40 @@
 const axios = require("axios");
 
-// Telegram
 const TOKEN = process.env.8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc;
 const CHAT_ID = process.env.1050200289;
 
-async function checkStock() {
+async function run() {
     try {
-
         const url = "https://porima3d.com/products/porima-eco-smart-pla-filament.js?t=" + Date.now();
 
-        console.log("İstek atılıyor...");
+        const res = await axios.get(url);
+        const data = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
 
-        const response = await axios.get(url, {
-            headers: {
-                "User-Agent": "Mozilla/5.0"
+        let stok = [];
+
+        data.variants.forEach(v => {
+            if (v.available) {
+                stok.push(v.title);
             }
         });
 
-        console.log("Status:", response.status);
-        console.log("Data tipi:", typeof response.data);
+        const mesaj = stok.length > 0
+            ? "🟢 STOK VAR\n\n" + stok.join("\n")
+            : "🔴 Stok yok";
 
-        let data;
+        await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+            chat_id: CHAT_ID,
+            text: mesaj
+        });
 
-        try {
-            data = typeof response.data === "string"
-                ? JSON.parse(response.data)
-                : response.data;
-        } catch (e) {
-            console.log("JSON parse hatası");
-            console.log(response.data);
-            return;
-        }
+        console.log("OK");
 
-        if (!data.variants) {
-            console.log("Variants YOK!");
-            console.log(data);
+    } catch (e) {
+        console.log("HATA:", e.message);
+    }
+}
+
+run();            console.log(data);
             return;
         }
 
