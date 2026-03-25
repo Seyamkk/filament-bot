@@ -1,7 +1,7 @@
 const axios = require("axios");
 
-const TOKEN = "8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc";
-const CHAT_ID = "1050200289";
+const TOKEN = process.env.8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc;
+const CHAT_ID = process.env.1050200289;
 
 async function run() {
     try {
@@ -12,29 +12,33 @@ async function run() {
 
         let stok = [];
 
-        data.variants.forEach(v => {
+        for (let v of data.variants) {
             if (v.available) {
                 stok.push(v.title);
             }
-        });
+        }
 
-        const mesaj = stok.length > 0
-            ? "🟢 STOK VAR\n\n" + stok.join("\n")
-            : "🔴 Stok yok";
+        let mesaj = "";
+
+        if (stok.length > 0) {
+            mesaj = "🟢 STOK VAR\n\n" + stok.join("\n");
+        } else {
+            mesaj = "🔴 Stok yok";
+        }
 
         await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
             chat_id: CHAT_ID,
             text: mesaj
         });
 
-        console.log("OK");
+        console.log("Çalıştı");
 
     } catch (e) {
         console.log("HATA:", e.message);
     }
 }
 
-run();            console.log(data);
+run();run();            console.log(data);
             return;
         }
 
