@@ -1,8 +1,7 @@
 const axios = require("axios");
 
-// TEST İÇİN (direkt yazdım)
-const TOKEN = "8427143698:AAF0R8LCYvvVVwTJrUG4NWVnAJ-lQMeXdFc";
-const CHAT_ID = "1050200289";
+// BURAYA CALLMEBOT LINKİNİ KOY
+const WHATSAPP_API = "https://api.callmebot.com/whatsapp.php?phone=905385277587&text=This+is+a+test&apikey=7624574";
 
 async function run() {
     try {
@@ -23,58 +22,13 @@ async function run() {
             ? "🟢 STOK VAR\n\n" + stok.join("\n")
             : "🔴 Stok yok";
 
-        await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-            chat_id: CHAT_ID,
-            text: mesaj
-        });
+        await axios.get(`${WHATSAPP_API}&text=${encodeURIComponent(mesaj)}`);
 
-        console.log("Çalıştı");
+        console.log("WhatsApp gönderildi");
 
     } catch (e) {
         console.log("HATA:", e.message);
     }
 }
 
-run();        console.log("HATA:", e.message);
-    }
-}
-
-run();run();            console.log(data);
-            return;
-        }
-
-        let stokta = [];
-
-        console.log("---- VARYANTLAR ----");
-
-        data.variants.forEach(v => {
-            console.log(v.title, "=>", v.available);
-
-            if (v.available === true) {
-                stokta.push(v.title);
-            }
-        });
-
-        let mesaj = stokta.length > 0
-            ? "🧵 STOK VAR\n\n" + stokta.join("\n")
-            : "🔴 Stok yok";
-
-        console.log("Gönderilecek mesaj:");
-        console.log(mesaj);
-
-        if (!TOKEN || !CHAT_ID) {
-            console.log("TOKEN veya CHAT_ID eksik!");
-            return;
-        }
-
-        await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-            chat_id: CHAT_ID,
-            text: mesaj
-        });
-
-        console.log("Telegram gönderildi");
-
-    } catch (err) {
-
-        console.log("GENEL HATA:");
-        console.log(err.message);
+run();
